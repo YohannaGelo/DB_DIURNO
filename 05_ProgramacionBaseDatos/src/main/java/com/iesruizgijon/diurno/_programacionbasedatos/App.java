@@ -22,13 +22,33 @@ public class App {
         final String USER = "root";
         final String PASS = "123qweASD_";
         final String nameDB = "northwind";
-        final String URL = "jdbc:mysql://localhost:3306/";    //o en lugar de localhost podemos poner: 127.0.0.1:3306
         
-
-        BaseDatos bd = new BaseDatos(USER, PASS, nameDB);
         
+        //Instancia objeto Base de Datos
+        BaseDatos bd = new BaseDatos(nameDB, USER, PASS);
+        
+        
+        //Conexión
         bd.conecta();
         
+        
+        
+        //Hacer un describe de alguna tabla
+        String[] TablaPedidos = bd.describe("orders");
+        
+        for (String TablaPedido : TablaPedidos) {
+            System.out.println(TablaPedido);
+        }
+        
+        
+        
+        //Consultas
+        bd.consultaPrueba();
+
+        bd.consultaPrueba2();
+        
+        
+        //Desconexión
         bd.desconecta();
         
         
