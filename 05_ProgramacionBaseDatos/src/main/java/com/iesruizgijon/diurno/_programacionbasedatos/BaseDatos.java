@@ -198,7 +198,7 @@ public class BaseDatos {
 
             Statement stmt = conexion.createStatement();
 
-            //Recuperando los datos
+            //Recuperando los datos, usamos el mismo comando que usariamos en mysql (show databases;)
             ResultSet rs = stmt.executeQuery("Show Databases");
 
             System.out.println("List of databases: ");
