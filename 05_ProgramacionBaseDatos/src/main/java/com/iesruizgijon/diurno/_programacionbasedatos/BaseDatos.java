@@ -39,8 +39,6 @@ public class BaseDatos {
     ////Para conexiones
     public void conecta() {
 
-
-
         //Comienza un bloque try para manejar posibles excepciones.
         try {
 
@@ -71,22 +69,21 @@ public class BaseDatos {
         }
     }
 
-    
     ////Para realizar consultas
     public void consultaPrueba() {
-        
+
         System.out.println("\n---------------------------------------------\n"
                 + "PRUEBA 1 - Consulta simple:\n");
-        
+
         String company;
         String apellidos;
         String nombre;
 
         try {
-            
+
             Statement sentencia = conexion.createStatement();
             ResultSet resultado = sentencia.executeQuery("select company, last_name, first_name from customers limit 10");
-            
+
             while (resultado.next()) {
                 company = resultado.getString("company");
                 apellidos = resultado.getString("last_name");
@@ -105,18 +102,18 @@ public class BaseDatos {
         }
 
     }
-    
+
     //Crea el método consultaPrueba2 en la que aparezcan los nombres de los clientes 
     //concatenados apellidos-nombre con los pedidos realizados (2 campos)
     public void consultaPrueba2() {
 
         System.out.println("\n---------------------------------------------\n"
                 + "PRUEBA 2 - Consulta concat - inner:\n");
-        
+
         String NombreCliente;
         int NumeroPedido;
-        final String consulta= 
-                   """
+        final String consulta
+                = """
                    select concat(c.last_name, ' ', c.first_name) AS NombreCliente, o.id AS pedido
                    from customers AS c
                    INNER JOIN orders AS o
@@ -124,18 +121,17 @@ public class BaseDatos {
                    limit 10;
                    """;
 
-
         try {
-            
+
             Statement sentencia = conexion.createStatement();
-            
+
             //la consulta puede pasarse directamente o como una variable ya definida:
             ResultSet resultado = sentencia.executeQuery(consulta);
             //ResultSet resultado = sentencia.executeQuery("select concat(c.last_name, ' ', c.first_name) AS NombreCliente, o.id AS pedido from customers AS c INNER JOIN orders AS o ON c.id = o.customer_id limit 10");
-            
+
             while (resultado.next()) {
-                NombreCliente =  resultado.getString("NombreCliente");
-                NumeroPedido =  resultado.getInt("pedido");      
+                NombreCliente = resultado.getString("NombreCliente");
+                NumeroPedido = resultado.getInt("pedido");
 
                 System.out.println("Cliente:\t" + NombreCliente + "\t\t---->\t\tPedido:\t" + NumeroPedido);
 
@@ -150,11 +146,10 @@ public class BaseDatos {
         }
 
     }
-    
-    
-    //Hacer un Describe de la tabla que se le ppasa
+
+    //Hacer un Describe de la tabla que se le pasa
     public String[] describe(String nombre) {
-        
+
         System.out.println("\n---------------------------------------------\n"
                 + "DESCRIBE DE TABLA: " + nombre + "\n");
 
@@ -166,16 +161,19 @@ public class BaseDatos {
 
             Statement statement = conexion.createStatement();
             ResultSet resultset = statement.executeQuery("SELECT * FROM " + nombre);
-            ResultSetMetaData metadatos = resultset.getMetaData();
+            ResultSetMetaData metadatos = resultset.getMetaData();  //estos nos va a ofrecer información sobre nombre de db, tablas, tipo de datos...
 
+            //contamos el número de columnas y lo alamcenamos
             n_columnas = metadatos.getColumnCount();
+            //ya defino mi array
             columnas = new String[n_columnas];
 
+            //recorremos el array
             for (i = 1; i <= n_columnas; i++) {
+                //getColumnName comienza en 1, que en realidad sería 0 en java... por eso el i-1
                 columnas[i - 1] = metadatos.getColumnName(i);
             }
-            
-            
+
         } catch (SQLException ex) {
 
             Logger.getLogger(BaseDatos.class.getName()).log(Level.SEVERE, null, ex);
@@ -183,5 +181,43 @@ public class BaseDatos {
         return columnas;
     }
     
+
     
+    //ver los nombres de las bases de datos
+    public void dbNames() {
+        
+        System.out.println("\n---------------------------------------------\n"
+                + "NOMBRES DE BASE DE DATOS:\n");
+
+        try {
+
+            //Se intenta establecer una conexión a la base de datos utilizando el método getConnection de DriverManager.
+            conexion = DriverManager.getConnection(this.URL + nameDB, USER, PASS);
+
+            System.out.println("Conexión realizada con éxito");
+
+            Statement stmt = conexion.createStatement();
+
+            //Recuperando los datos
+            ResultSet rs = stmt.executeQuery("Show Databases");
+
+            System.out.println("List of databases: ");
+
+            while (rs.next()) {
+                
+                //imprime el nombre de cada base de datos
+                System.out.print(rs.getString(1));
+
+                System.out.println();
+
+            }
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(BaseDatos.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+    }
+
 }

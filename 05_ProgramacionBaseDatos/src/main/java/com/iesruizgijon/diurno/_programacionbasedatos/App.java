@@ -32,6 +32,9 @@ public class App {
         bd.conecta();
         
         
+        //Ver nombres de la base de datos
+        bd.dbNames();
+        
         
         //Hacer un describe de alguna tabla
         String[] TablaPedidos = bd.describe("orders");
