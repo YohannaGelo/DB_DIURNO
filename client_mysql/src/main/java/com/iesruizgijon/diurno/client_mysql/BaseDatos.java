@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -151,48 +152,101 @@ public class BaseDatos {
     
     ///   /*  /// --->   G.U.I.   <--- \\\   *\   \\\  
     //consultas de usuario desde gui
-    public String consultaUsuario(String consulta) {
-
-        System.out.println("\n---------------------------------------------\n"
-                + "CONSULTA DEL USUARIO:\n");
-
-        String resultadoConsulta = "";
+//    public String consultaUsuario(String consulta) {
+//
+//        System.out.println("\n---------------------------------------------\n"
+//                + "CONSULTA DEL USUARIO:\n");
+//
+//        String resultadoConsulta = "";
+//        
+//        String NombreCliente;
+//        int NumeroPedido;
+//
+//
+//        try {
+//
+//            Statement sentencia = conexion.createStatement();
+//
+//            //la consulta puede pasarse directamente o como una variable ya definida:
+//            ResultSet resultado = sentencia.executeQuery(consulta);
+//            ResultSetMetaData rsmd = resultado.getMetaData();  //estos nos va a ofrecer información sobre nombre de db, tablas, tipo de datos...
+//            
+//            int numColumnas = rsmd.getColumnCount();
+//            
+//            
+//            while (resultado.next()) {
+//                NombreCliente = resultado.getString("NombreCliente");
+//                NumeroPedido = resultado.getInt("pedido");
+//
+//                resultadoConsulta = resultadoConsulta + "Cliente:\t" + NombreCliente + "\t\t---->\t\tPedido:\t" + NumeroPedido + "\n";
+// 
+//
+//            }
+//            resultado.close();
+//            sentencia.close();
+//
+//            System.out.println("\nConsulta realizada correctamente\n"
+//                    + "---------------------------------------------\n");
+//        } catch (SQLException ex) {
+//            Logger.getLogger(BaseDatos.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        return resultadoConsulta;
+//
+//    }
+    
+    
+    
+        ///   /*  /// --->   G.U.I.   <--- \\\   *\   \\\  
+    
+        //consultas de usuario desde GUI - PROFE
+        public ArrayList<String> getQuery(String consulta){
         
-        String NombreCliente;
-        int NumeroPedido;
-
-
-        try {
-
+        ArrayList<String> tabla = new ArrayList<>();
+        String fila = new String();
+        
+        
+        try {   //intentamos lo siguiente
+            
+            //conecto con la base de datos y obtener el resultado de la consulta
             Statement sentencia = conexion.createStatement();
-
-            //la consulta puede pasarse directamente o como una variable ya definida:
             ResultSet resultado = sentencia.executeQuery(consulta);
-            ResultSetMetaData rsmd = resultado.getMetaData();  //estos nos va a ofrecer información sobre nombre de db, tablas, tipo de datos...
             
-            int numColumnas = rsmd.getColumnCount();
+            //obtiene informacion como PK, cascade, nombre tabla...
+            ResultSetMetaData rsmd = resultado.getMetaData();
             
+            //gracias a los metadatos obtenemos el nº de columnas
+            int numeroColumnas = rsmd.getColumnCount();
             
+            //mientras sigamos obteniendo resultados (es el cursor que va de fila en fila)
             while (resultado.next()) {
-                NombreCliente = resultado.getString("NombreCliente");
-                NumeroPedido = resultado.getInt("pedido");
-
-                resultadoConsulta = resultadoConsulta + "Cliente:\t" + NombreCliente + "\t\t---->\t\tPedido:\t" + NumeroPedido + "\n";
- 
+                
+                //recorremos todas las columnas de la fila
+                for (int i = 0; i <numeroColumnas;i++){
+                    
+                    //el valor lo guardamos como String (i+1 porque aquí se empieza en 1)
+                    //concatenamos los resultados
+                    fila = fila + " | " + resultado.getString(i+1);
+                }
+                
+               //el valor de todas las columnas (fila), añadimos a nuestro arrayList
+               tabla.add(fila);
+               
+               //vaciamos el String de fila, para guardar la información de la siguiente fila
+               fila = new String();
 
             }
+            
+            //cerramos el resultado y la conexión
             resultado.close();
             sentencia.close();
 
-            System.out.println("\nConsulta realizada correctamente\n"
-                    + "---------------------------------------------\n");
         } catch (SQLException ex) {
             Logger.getLogger(BaseDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        return resultadoConsulta;
-
+        return tabla;
     }
+    
     
 
     //Hacer un Describe de la tabla que se le pasa

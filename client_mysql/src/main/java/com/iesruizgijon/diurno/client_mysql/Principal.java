@@ -4,6 +4,9 @@
  */
 package com.iesruizgijon.diurno.client_mysql;
 
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author yohannagelo
@@ -84,6 +87,9 @@ public class Principal extends javax.swing.JFrame {
 //        //Al clickar en el botón pasamos el texto del recuadro de entrada al recudro de salida
 //        salida.setText(entrada.getText());
 
+        //creamos Array para guardar el resultado de las consultas
+        ArrayList<String> tabla = null;
+
         //establecemos los datos como constantes
         final String USER = "root";
         final String PASS = "123qweASD_";
@@ -95,20 +101,40 @@ public class Principal extends javax.swing.JFrame {
         //Conexión
         bd.conecta();
 
-        //leo la consulta del usuario en la caja de entrada
-        String consulta = entrada.getText().toLowerCase().trim();
-        
-        if (consulta.startsWith("show")) {
-            
+        tabla = bd.getQuery(entrada.getText());
+
+        if (entrada.getText().startsWith("show")) {
+
             salida.setText(bd.dataBaseNames());
-            
-        } else if (consulta.startsWith("select")) {
-        
+
+        } else if (entrada.getText().startsWith("select")) {
+
             //muestro el resultado de la consulta en la caja de salida
-            salida.setText(bd.consultaUsuario(consulta));
-        
+            String contenido = "";
+
+            for (String elemento : tabla) {
+
+                contenido = contenido + elemento + "\n";
+            }
+            
+            salida.setText(contenido);
+
         }
-        
+
+//  //Solución mia incompleta
+//        //leo la consulta del usuario en la caja de entrada
+//        String consulta = entrada.getText().toLowerCase().trim();
+//        
+//        if (consulta.startsWith("show")) {
+//            
+//            salida.setText(bd.dataBaseNames());
+//            
+//        } else if (consulta.startsWith("select")) {
+//        
+//            //muestro el resultado de la consulta en la caja de salida
+//            salida.setText(bd.consultaUsuario(consulta));
+//        
+//        }
         //Desconexión
         bd.desconecta();
 
