@@ -37,23 +37,21 @@ public class BaseDatos {
     }
 
     //MÉTODOS
-    ////Para conexiones
-    public void conecta() {
+    
+    ////Para conexiones en GUI
+    public boolean conecta() {
 
-        //Comienza un bloque try para manejar posibles excepciones.
+        boolean conectado = false;
+        
         try {
-
-            //Se intenta establecer una conexión a la base de datos utilizando el método getConnection de DriverManager.
-            conexion = DriverManager.getConnection(this.URL + nameDB, USER, PASS);
-            System.out.println("\nConexión establecida\n");
-
-        } catch (SQLException ex) {     //Si se produce una excepción SQLException, el flujo del programa se desvía aquí.
-            //Excepción para errores
+            conexion = DriverManager.getConnection(URL + nameDB, USER, PASS);
+            conectado = true;
+           
+        } catch (SQLException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("\nError de conexión\n");
-
         }
-
+        
+        return conectado;
     }
 
     ////Para desconexiones
@@ -148,55 +146,7 @@ public class BaseDatos {
 
     }
     
-    
-    
-    ///   /*  /// --->   G.U.I.   <--- \\\   *\   \\\  
-    //consultas de usuario desde gui
-//    public String consultaUsuario(String consulta) {
-//
-//        System.out.println("\n---------------------------------------------\n"
-//                + "CONSULTA DEL USUARIO:\n");
-//
-//        String resultadoConsulta = "";
-//        
-//        String NombreCliente;
-//        int NumeroPedido;
-//
-//
-//        try {
-//
-//            Statement sentencia = conexion.createStatement();
-//
-//            //la consulta puede pasarse directamente o como una variable ya definida:
-//            ResultSet resultado = sentencia.executeQuery(consulta);
-//            ResultSetMetaData rsmd = resultado.getMetaData();  //estos nos va a ofrecer información sobre nombre de db, tablas, tipo de datos...
-//            
-//            int numColumnas = rsmd.getColumnCount();
-//            
-//            
-//            while (resultado.next()) {
-//                NombreCliente = resultado.getString("NombreCliente");
-//                NumeroPedido = resultado.getInt("pedido");
-//
-//                resultadoConsulta = resultadoConsulta + "Cliente:\t" + NombreCliente + "\t\t---->\t\tPedido:\t" + NumeroPedido + "\n";
-// 
-//
-//            }
-//            resultado.close();
-//            sentencia.close();
-//
-//            System.out.println("\nConsulta realizada correctamente\n"
-//                    + "---------------------------------------------\n");
-//        } catch (SQLException ex) {
-//            Logger.getLogger(BaseDatos.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//        return resultadoConsulta;
-//
-//    }
-    
-    
-    
+
         ///   /*  /// --->   G.U.I.   <--- \\\   *\   \\\  
     
         //consultas de usuario desde GUI - PROFE
@@ -225,7 +175,7 @@ public class BaseDatos {
                 for (int i = 0; i <numeroColumnas;i++){
                     
                     //el valor lo guardamos como String (i+1 porque aquí se empieza en 1)
-                    //concatenamos los resultados
+                    //concatenamos los datos de cada columna en una cadena, que será nuestra fila
                     fila = fila + " | " + resultado.getString(i+1);
                 }
                 

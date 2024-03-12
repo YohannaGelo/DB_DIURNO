@@ -29,18 +29,24 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        limpiar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         salida = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         entrada = new javax.swing.JTextArea();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("EJECUTAR");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        limpiar.setText("LIMPIAR");
+        limpiar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+                limpiarMouseClicked(evt);
+            }
+        });
+        limpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limpiarActionPerformed(evt);
             }
         });
 
@@ -52,6 +58,13 @@ public class Principal extends javax.swing.JFrame {
         entrada.setRows(5);
         jScrollPane3.setViewportView(entrada);
 
+        jButton2.setText("EJECUTAR");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -59,31 +72,34 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 709, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(246, 246, 246)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(44, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(210, 210, 210))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    private void limpiarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_limpiarMouseClicked
 //        //Al clickar en el botón pasamos el texto del recuadro de entrada al recudro de salida
 //        salida.setText(entrada.getText());
 
@@ -99,8 +115,22 @@ public class Principal extends javax.swing.JFrame {
         BaseDatos bd = new BaseDatos(nameDB, USER, PASS);
 
         //Conexión
-        bd.conecta();
+        boolean conexion_correcta = bd.conecta();
 
+
+        ////Aviso al usuario si se ha conectado correctamente o no
+        if (conexion_correcta) {
+
+            JOptionPane.showMessageDialog(null, "Conexión establecida");
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Problemas en la conexión");
+        }
+
+        
+        
+        
+        
         tabla = bd.getQuery(entrada.getText());
 
         if (entrada.getText().startsWith("show")) {
@@ -116,29 +146,24 @@ public class Principal extends javax.swing.JFrame {
 
                 contenido = contenido + elemento + "\n";
             }
-            
+
             salida.setText(contenido);
 
         }
 
-//  //Solución mia incompleta
-//        //leo la consulta del usuario en la caja de entrada
-//        String consulta = entrada.getText().toLowerCase().trim();
-//        
-//        if (consulta.startsWith("show")) {
-//            
-//            salida.setText(bd.dataBaseNames());
-//            
-//        } else if (consulta.startsWith("select")) {
-//        
-//            //muestro el resultado de la consulta en la caja de salida
-//            salida.setText(bd.consultaUsuario(consulta));
-//        
-//        }
+
         //Desconexión
         bd.desconecta();
 
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_limpiarMouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2MouseClicked
+
+    private void limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiarActionPerformed
+        salida.setText("");
+    }//GEN-LAST:event_limpiarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,9 +203,10 @@ public class Principal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea entrada;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JButton limpiar;
     private javax.swing.JTextArea salida;
     // End of variables declaration//GEN-END:variables
 }
