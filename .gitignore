@@ -24,3 +24,5 @@ hs_err_pid*
 replay_pid*
 /05_ProgramacionBaseDatos/target/
 /client_mysql/target/
+/jtable_mysql/target/
+/ProgramacionDB_Ejercicio1/target/
