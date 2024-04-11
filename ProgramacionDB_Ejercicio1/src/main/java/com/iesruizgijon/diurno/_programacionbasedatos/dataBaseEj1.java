@@ -271,7 +271,8 @@ public class dataBaseEj1 {
         return columnas;
     }
 
-    //consultas de usuario desde GUI - PROFE
+    
+     //consultas de usuario desde GUI
     public ArrayList<String> getQuery(String consulta) {
 
         ArrayList<String> tabla = new ArrayList<>();
@@ -296,18 +297,39 @@ public class dataBaseEj1 {
 
             //recorremos el array
             for (int i = 0; i < numeroColumnas; i++) {
-                //getColumnName
-                columnas = columnas + " | " + metadatos.getColumnName(i + 1);
+
+                //se coge el valor de la columna y lo formateamos para que tenga un ancho fijo
+                String valor = String.format("%-16s", metadatos.getColumnName(i + 1));
+
+                //si el dato guardado es mayor que los 16 caracteres de ancho que he establecido, se corta
+                if (valor.length() > 16) {
+                    valor = valor.substring(0, 16);
+                }
+
+                //añado el valor de la columna a la fila de cabecera y un separador(|)
+                columnas += valor + " | ";
+
+                //pongo un separador (|) al comienzco de cada fila
+                if (i == 0) {
+                    columnas = " | " + columnas;
+                }
+
             }
 
-            //añado diseño de tabla
-            tabla.add(" +···································································+");
+            //con este for alamaceno los puntos que necesito para creal las lineas separadoras de la tabla
+            String separador = "";
+            for (int i = 0; i < columnas.length() - 4; i++) {
+                separador += "·";
+            }
+
+            //añado el separador con un + antes y otro al final
+            tabla.add(" +" + separador + "+");
 
             //el valor de todas las columnas (fila), añadimos a nuestro arrayList
             tabla.add(columnas);
 
-            //añado diseño de tabla
-            tabla.add(" +···································································+");
+            //añado el separador con un + antes y otro al final
+            tabla.add(" +" + separador + "+");
 
             //mientras sigamos obteniendo resultados (es el cursor que va de fila en fila)
             while (resultado.next()) {
@@ -315,9 +337,23 @@ public class dataBaseEj1 {
                 //recorremos todas las columnas de la fila
                 for (int i = 0; i < numeroColumnas; i++) {
 
-                    //el valor lo guardamos como String (i+1 porque aquí se empieza en 1)
-                    //concatenamos los datos de cada columna en una cadena, que será nuestra fila
-                    fila = fila + " | " + resultado.getString(i + 1);
+                    //PRUEBA
+                    //se coge el valor de la columna y lo formateamos para que tenga un ancho fijo
+                    String valor = String.format("%-16s", resultado.getString(i + 1));
+
+                    //si el dato guardado es mayor que los 16 caracteres de ancho que he establecido, se corta
+                    if (valor.length() > 16) {
+                        valor = valor.substring(0, 16);
+                    }
+
+                    //añado el valor de la columna a la fila y un separador(|)
+                    fila += valor + " | ";
+
+                    //pongo un separador (|) al comienzco de cada fila
+                    if (i == 0) {
+                        fila = " | " + fila;
+                    }
+
                 }
 
                 //el valor de todas las columnas (fila), añadimos a nuestro arrayList
@@ -328,8 +364,8 @@ public class dataBaseEj1 {
 
             }
 
-            //añado diseño de tabla
-            tabla.add(" +···································································+");
+            //añado el separador con un + antes y otro al final
+            tabla.add(" +" + separador + "+");
 
             //cerramos el resultado y la conexión
             resultado.close();
@@ -341,64 +377,23 @@ public class dataBaseEj1 {
         return tabla;
     }
 
+
     //muestra la consulta
     public void showQuery(ArrayList<String> tabla) {
 
         System.out.println("\n-------------------------------------------------------------\n"
                 + "RESULTADO DE LA CONSULTA:\n");
 
-        // Obtener el número de columnas para calcular el ancho de cada columna
-        int numColumns = tabla.get(1).split("\\|").length; // Suponemos que la segunda línea contiene los nombres de las columnas
-        int[] columnWidths = new int[numColumns];
+        //muestro el resultado de la consulta en la caja de salida
+        String contenido = "";
 
-        // Calcular el ancho máximo de cada columna
-        for (String row : tabla) {
-            String[] columns = row.split("\\|");
-            for (int i = 0; i < columns.length; i++) {
-                String column = columns[i].trim(); // Eliminar espacios en blanco alrededor de la columna
-                if (column.length() > columnWidths[i]) {
-                    columnWidths[i] = column.length();
-                }
-            }
+        for (String elemento : tabla) {
+
+            contenido = contenido + elemento + "\n";
         }
 
-// Construir el formato para cada fila con columnas de tamaño uniforme
-        StringBuilder formatBuilder = new StringBuilder();
-        for (int width : columnWidths) {
-            formatBuilder.append("%-").append(width + 2).append("s  "); // Añadir 2 espacios adicionales para separación
-        }
-        String format = formatBuilder.toString();
+        System.out.println(contenido);
 
-// Mostrar la tabla con columnas de tamaño uniforme
-        for (String row : tabla) {
-            // Dividir la fila en columnas
-            String[] columns = row.split("\\|");
-
-            // Eliminar espacios en blanco alrededor de cada columna
-            for (int i = 0; i < columns.length; i++) {
-                columns[i] = columns[i].trim();
-            }
-
-            // Imprimir cada columna utilizando el formato
-            System.out.printf(format, (Object[]) columns);
-            System.out.println(); // Nueva línea después de imprimir una fila
-        }
     }
 
-//    public void showQuery(ArrayList<String> tabla) {
-//
-//        System.out.println("\n-------------------------------------------------------------\n"
-//                + "RESULTADO DE LA CONSULTA:\n");
-//
-//        //muestro el resultado de la consulta en la caja de salida
-//        String contenido = "";
-//
-//        for (String elemento : tabla) {
-//
-//            contenido = contenido + elemento + "\n";
-//        }
-//
-//        System.out.println(contenido);
-//
-//    }
-    }
+}

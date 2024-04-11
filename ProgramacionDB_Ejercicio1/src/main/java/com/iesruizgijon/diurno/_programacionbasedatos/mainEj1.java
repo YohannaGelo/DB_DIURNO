@@ -78,6 +78,7 @@ public class mainEj1 {
         String query = s.nextLine();
 
         //creamos Array para guardar el resultado de las consultas
+        //consulta de prueba:   select first_name, last_name, city, email_address from customers limit 10;
         ArrayList<String> tabla = null;
         tabla = bd.getQuery(query);
         
